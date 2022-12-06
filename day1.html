@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 3</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+function calculate(){
+
+	var elfLoad = [];
+	var currentTotal = 0;
+	for(i = 0; i<txtArr.length; i++){
+		if(Number.isInteger(parseInt(txtArr[i]))){
+			currentTotal += parseInt(txtArr[i]);
+		}else{
+			elfLoad.push(currentTotal);
+			currentTotal = 0;
+		}
+	}
+	elfLoad.push(currentTotal);
+	
+	highest = 0;
+	highest2 = 0;
+	highest3 = 0;
+	for(e = 0; e<elfLoad.length; e++){
+		if(elfLoad[e] > highest){
+			highest3 = highest2;
+			highest2 = highest;
+			highest = elfLoad[e];
+		}else if (elfLoad[e] > highest2){
+			highest3 = highest2;
+			highest2 = elfLoad[e];
+		}else if (elfLoad[e] > highest3){
+			highest3 = elfLoad[e];
+		}
+	}
+	document.getElementById("calc").innerHTML = highest + highest2 + highest3;
+	
+}
+</script>
+</html>

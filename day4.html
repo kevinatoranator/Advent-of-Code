@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 4</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+function calculate(){
+	var currentTotal = 0;
+	
+	for(var i =0; i<txtArr.length; i++){
+		var elf1 = txtArr[i].split(",")[0];
+		var elf2 = txtArr[i].split(",")[1];
+		var elf1range = elf1.split("-");
+		var elf2range = elf2.split("-");
+		
+		
+		/*if(parseInt(elf1range[0])>= parseInt(elf2range[0])&& parseInt(elf1range[1])<= parseInt(elf2range[1])){
+			currentTotal += 1;
+		}else if(parseInt(elf2range[0])>= parseInt(elf1range[0])&& parseInt(elf2range[1])<= parseInt(elf1range[1])){
+			currentTotal += 1;
+		}*/
+		if(parseInt(elf1range[0])>= parseInt(elf2range[0])&& parseInt(elf1range[0])<= parseInt(elf2range[1])){
+			currentTotal += 1;
+		}else if(parseInt(elf1range[1])>= parseInt(elf2range[0])&& parseInt(elf1range[1])<= parseInt(elf2range[1])){
+			currentTotal += 1;
+		}else if(parseInt(elf2range[0])>= parseInt(elf1range[0])&& parseInt(elf2range[0])<= parseInt(elf1range[1])){
+			currentTotal += 1;
+		}else if(parseInt(elf2range[1])>= parseInt(elf1range[0])&& parseInt(elf2range[1])<= parseInt(elf1range[1])){
+			currentTotal += 1;
+		}		
+		
+	}	
+		/*var elf1nums = [];
+		var elf2nums = [];
+		for(var j=parseInt(elf1range[0]); j<parseInt(elf1range[1]); j++){
+		
+			elf1nums.push(j);
+		}
+		for(var k=parseInt(elf2range[0]); k<parseInt(elf2range[1]); k++){
+			elf2nums.push(k);
+		
+		}
+		elf1nums = elf1nums.join('');
+		elf2nums = elf2nums.join('');
+		alert(elf1nums);
+		alert(elf2nums);
+		
+		if(elf1nums.search(elf2nums) != -1){
+			alert(txtArr[i]);
+			currentTotal += 1;
+		}else if(elf2nums.search(elf1nums) != -1){
+			alert(txtArr[i]);
+			currentTotal  += 1;
+		}
+		
+		
+	}*/
+	
+	document.getElementById("calc").innerHTML = currentTotal;
+	
+}
+
+/*function findInArray(arr1, arr2){
+	
+	var index = -1;
+	for(j = 0; j < arr1.length; j++){
+		index = arr2.findIndex(arr[j]);
+		if(index == -1){
+			break;
+		}else if(arr2.findIndex(arr[-1])
+}*/
+</script>
+</html>

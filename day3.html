@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 3</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+function calculate(){
+	var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+	var currentTotal = 0;
+	
+	/*for(var j =0; j<txtArr.length; j++){
+		var spot1 = txtArr[j].substring(0,txtArr[j].length/2);
+		var spot2 = txtArr[j].substring(txtArr[j].length/2, txtArr[j].length);
+		
+		for(var i=0; i<spot1.length; i++){
+			if(spot2.search(spot1[i]) != -1){
+				//alert(spot1[i]);
+				//alert(spot1);
+				//alert(spot2);
+				currentTotal += letters.indexOf(spot1[i])+1;
+				//alert(currentTotal);
+				break;
+			}
+		}
+	}*/
+	for(var i =0; i<txtArr.length-2; i+=3){
+		var bag1 = txtArr[i];
+		var bag2 = txtArr[i+1];
+		var bag3 = txtArr[i+2];
+		
+		for(var j=0; j<bag1.length; j++){
+			if(bag2.search(bag1[j]) != -1){
+				if(bag3.search(bag1[j]) != -1){
+					//alert(bag1[j]);
+					currentTotal += letters.indexOf(bag1[j])+1;
+					break;
+				}
+			}
+		}
+	}
+	document.getElementById("calc").innerHTML = currentTotal;
+	
+}
+</script>
+</html>

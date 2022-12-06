@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 5</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+function calculate(){
+	var currentTotal = 0;
+	var crates = [];
+	
+	for(var i = 0; i<txtArr.length; i++){
+		if(txtArr[i].includes("1")){
+			break;
+		}
+		for(var j = 0; j<txtArr[i].length; j++){
+			if(j%4 == 0){
+				if(i == 0){
+					crates.push([]);
+				}
+				var chr = txtArr[i][j+1];
+				//alert(chr + " row: " + j/4);
+				//crates[j/4].unshift(txtArr[i][j+1]);
+				if(chr != " "){
+					crates[j/4].unshift(chr);
+				}
+				//alert(crates[j/4]);
+			}
+			//alert(crates);
+		}
+		//alert(crates[i]);
+	}
+	//alert(crates);
+	var topCrates = [];
+	for(var k = 0; k<txtArr.length; k++){
+		if(txtArr[k].includes("move")){
+			var holding = [];
+			var num = parseInt(txtArr[k].split(" ")[1]);
+			var startRow = parseInt(txtArr[k].split(" ")[3])-1;
+			var endRow = parseInt(txtArr[k].split(" ")[5])-1;
+			//alert("start:"+crates[startRow]);
+			//alert("dest:"+crates[endRow]);
+			for(var l = 0; l < num; l++){
+				holding.unshift(crates[startRow].pop());
+			}
+			//alert("hold:"+holding);
+			crates[endRow] = crates[endRow].concat(holding);
+			//alert("r1:"+crates[0]);
+			//alert("r2:"+crates[1]);
+			//alert("r3:"+crates[2]);
+		}
+	}
+	
+	for(var m =0; m<crates.length; m++){
+		//alert(crates[m]);
+		topCrates.push(crates[m].pop());
+	}
+
+	
+	document.getElementById("calc").innerHTML = topCrates.join("");
+	
+}
+
+</script>
+</html>
