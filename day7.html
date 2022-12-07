@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 7</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+var directories = {};
+function calculate(){
+	var currentTotal = 0;
+	
+	var currentDirectory = "";
+	
+	for(var i = 0; i < txtArr.length; i++){
+		if(txtArr[i].includes("$ cd")){
+			if(txtArr[i].includes("..")){
+				var tempArr = [];
+				tempArr = currentDirectory.split("-");
+				tempArr.pop();
+				currentDirectory = tempArr.join("-");
+			}else{
+				currentDirectory += "-" + txtArr[i].split(" ")[2].trim();
+			}
+			if(txtArr[i+1].includes("$ ls")){
+				p = i;
+				i = i+2;
+				//alert(txtArr[i].split(" ")[2]);
+				var tempArr = [];
+				while(!txtArr[i].includes("$")){
+					tempArr.push(txtArr[i]);
+					i++;
+					if(i==txtArr.length){
+						break;
+					}
+				}
+				//alert(tempArr);
+				directories[currentDirectory] = tempArr;
+				if(i!=txtArr.length){
+					i--;
+				}
+			}
+		}
+	}
+	
+	//part 1
+	/*for(var key in directories){
+		var value = directories[key];
+		//alert(key);
+		var currentVal = dirCalc(value, key);
+		if(currentVal<=100000){
+			currentTotal += currentVal;
+		}
+	}*/
+	//alert(directories.get("a"));
+	
+	for(var key in directories){
+		var value = directories[key];
+		//alert(key);
+		var currentVal = dirCalc(value, key);
+		if(currentVal>=(30000000-(70000000-dirCalc(directories["-/"], "-/")))){
+			if(currentTotal == 0){
+				currentTotal = currentVal;
+			}else if(currentVal < currentTotal){
+				currentTotal = currentVal;
+			}
+		}
+	}
+	document.getElementById("calc").innerHTML = currentTotal;
+	
+}
+
+function dirCalc(arrayS, cd){
+	var size = 0;
+	for(var i = 0; i<arrayS.length; i++){
+		//alert(arrayS[i]);
+		if(arrayS[i].includes("dir")){
+			cd += "-" + arrayS[i].split(" ")[1].trim();
+			//alert(cd);
+			//alert(directories[cd]);
+			size += parseInt(dirCalc(directories[cd], cd));
+			var tempArr = [];
+			tempArr = cd.split("-");
+			tempArr.pop();
+			cd = tempArr.join("-");
+		}else{
+			size += parseInt(arrayS[i].split(" ")[0]);
+		}
+	}
+	//alert(size);
+	return size;
+}
+
+</script>
+</html>
