@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 9</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+
+function calculate(){
+	var currentTotal = 0;
+
+	//var headLoc = [0, 0];
+	//var tailLoc = [0, 0];
+	
+	var visted = [];
+	
+	var ropeLoc = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
+	for(var i = 0; i < txtArr.length; i++){
+		var direction, distance;
+		//alert(txtArr[i]);
+		var tempStr = txtArr[i].split(" ");
+		direction = tempStr[0];
+		distance = parseInt(tempStr[1]);
+		for(var j = 0; j<distance; j++){
+			shift(ropeLoc, direction, 0);
+			
+			for(var l = 1; l<ropeLoc.length; l++){
+				//console.log(Math.abs(ropeLoc[l-1][0]-ropeLoc[l][0]));
+				//console.log(Math.abs(ropeLoc[l-1][1]-ropeLoc[l][1]));
+				if(Math.abs(ropeLoc[l-1][0]-ropeLoc[l][0])>1 || Math.abs(ropeLoc[l-1][1]-ropeLoc[l][1])>1){
+						if(ropeLoc[l-1][0]>ropeLoc[l][0] && ropeLoc[l-1][1]>ropeLoc[l][1]){
+							ropeLoc[l][0]++;
+							ropeLoc[l][1]++;
+						}else if(ropeLoc[l-1][0]>ropeLoc[l][0] && ropeLoc[l-1][1]<ropeLoc[l][1]){
+							ropeLoc[l][0]++;
+							ropeLoc[l][1]--;
+						}else if(ropeLoc[l-1][0]<ropeLoc[l][0] && ropeLoc[l-1][1]>ropeLoc[l][1]){
+							ropeLoc[l][0]--;
+							ropeLoc[l][1]++;
+						}else if(ropeLoc[l-1][0]<ropeLoc[l][0] && ropeLoc[l-1][1]<ropeLoc[l][1]){
+							ropeLoc[l][0]--;
+							ropeLoc[l][1]--;	
+						}else if(ropeLoc[l-1][0]==ropeLoc[l][0] && ropeLoc[l-1][1]>ropeLoc[l][1]){
+							ropeLoc[l][1]++;
+						}else if(ropeLoc[l-1][0]==ropeLoc[l][0] && ropeLoc[l-1][1]<ropeLoc[l][1]){
+							ropeLoc[l][1]--;
+						}else if(ropeLoc[l-1][0]<ropeLoc[l][0] && ropeLoc[l-1][1]==ropeLoc[l][1]){
+							ropeLoc[l][0]--;
+						}else if(ropeLoc[l-1][0]>ropeLoc[l][0] && ropeLoc[l-1][1]==ropeLoc[l][1]){
+							ropeLoc[l][0]++;
+						}
+				}
+			}
+			console.log("Rope: " + "["+ropeLoc[0]+"]"+"["+ropeLoc[1]+"]"+"["+ropeLoc[2]+"]"+"["+ropeLoc[3]+"]"+"["+ropeLoc[4]+"]"+"["+ropeLoc[5]+"]"+"["+ropeLoc[6]+"]"+"["+ropeLoc[7]+"]"+"["+ropeLoc[8]+"]"+"["+ropeLoc[9]+"]");
+			var contains = false;
+			for(var k = 0; k < visted.length; k++){
+				if(visted[k][0] == ropeLoc[9][0] && visted[k][1] == ropeLoc[9][1]){
+					contains = true;
+					break;
+				}
+			}
+			if(!contains){
+				visted.push([ropeLoc[9][0], ropeLoc[9][1]]);
+				currentTotal++;
+			}
+				//alert("Section " + l +" : " + ropeLoc[l]);
+			
+			
+			
+			//part 1
+			/*if(Math.abs(headLoc[0]-tailLoc[0])>1){
+				shift(direction,l);
+				if(tailLoc[1]!= headLoc[1]){
+					tailLoc[1] = headLoc[1];
+				}
+			}
+			if(Math.abs(headLoc[1]-tailLoc[1])>1){
+				shift(direction,l);
+				if(tailLoc[0]!= headLoc[0]){
+					tailLoc[0] = headLoc[0];
+				}
+			}
+			var contains = false;
+			for(var k = 0; k < visted.length; k++){
+				if(visted[k][0] == tailLoc[0] && visted[k][1] == tailLoc[1]){
+					contains = true;
+					break;
+				}
+			}
+			if(!contains){
+				visted.push([tailLoc[0], tailLoc[1]]);
+				currentTotal++;
+			}*/
+		
+			
+			//alert("Tail :" + ropeLoc[9]);
+		}
+	}
+	console.log(visted);
+	document.getElementById("calc").innerHTML = currentTotal;
+
+}
+function shift(rope, direction, segment){
+	if(direction == "R"){
+		rope[segment][0]++;
+	}else if(direction == "L"){
+		rope[segment][0]--;
+	}else if(direction == "U"){
+		rope[segment][1]++;
+	}else if(direction == "D"){
+		rope[segment][1]--;
+	}
+}
+
+/*function shiftX(rope, direction, segment){
+	while(Math.abs(rope[segment-1][0]-rope[segment][0])>1 && segment < rope.length){
+		if(direction == "R"){
+			rope[segment][0]++;
+		}else if(direction == "L"){
+			rope[segment][0]--;
+		}else if(direction == "U"){
+			rope[segment][1]++;
+		}else if(direction == "D"){
+			rope[segment][1]--;
+		}
+		if(rope[segment-1][1]!= rope[segment][1]){
+			if(rope[segment-1][1]>rope[segment][1]){
+				direction = "U";
+			}else{
+				direction = "D";
+			}
+			rope[segment][1] = rope[segment-1][1];
+		}
+		alert("loopx");
+		shiftX(rope, direction, segment+1);
+	}
+}
+function shiftY(rope, direction, segment){
+	while(Math.abs(rope[segment-1][1]-rope[segment][1])>1 && segment < rope.length){
+		if(direction == "R"){
+			rope[segment][0]++;
+		}else if(direction == "L"){
+			rope[segment][0]--;
+		}else if(direction == "U"){
+			rope[segment][1]++;
+		}else if(direction == "D"){
+			rope[segment][1]--;
+		}
+		if(rope[segment-1][0]!= rope[segment][0]){
+			if(rope[segment-1][1]>rope[segment][1]){
+				direction = "R";
+			}else{
+				direction = "L";
+			}
+			rope[segment][0] = rope[segment-1][0];
+		}
+		alert("loopY");
+		shiftY(rope, direction, segment+1);
+	}
+}*/
+
+</script>
+</html>
