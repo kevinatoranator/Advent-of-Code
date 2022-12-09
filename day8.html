@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 8</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+var treeArray = [];
+function calculate(){
+	var currentTotal = 0;
+
+	
+	for(var i = 0; i < txtArr.length; i++){
+		var tempArr = [];
+		for(var j = 0; j < txtArr[i].length; j++){
+			tempArr.push(parseInt(txtArr[i][j]));
+		}
+		treeArray.push(tempArr);
+	}
+	
+	
+	//Part 1
+	/*for(var k = 0; k < treeArray.length; k++){
+		//alert(treeArray[k])
+		for(var l = 0; l < treeArray[k].length; l++){
+			if(!horCheck(k,l)){
+				//alert(k +","+ l);
+				//alert(treeArray[k][l]);
+				currentTotal++;
+			}else if(!verCheck(k,l)){
+				//alert(k +","+ l);
+				//alert(treeArray[k][l]);
+				currentTotal++;
+			}
+		}
+
+	}*/
+	for(var k = 0; k < treeArray.length; k++){
+		//alert(treeArray[k])
+		for(var l = 0; l < treeArray[k].length; l++){
+			var currentValue = horCalc(k,l)*verCalc(k,l);
+			if(currentValue>currentTotal){
+				currentTotal = currentValue;
+			}
+		}
+
+	}
+	
+	document.getElementById("calc").innerHTML = currentTotal;
+
+}	
+
+function horCheck(rowNum, colNum){
+	var num = parseInt(treeArray[rowNum][colNum]);
+	var isBlockedRight = false;
+	var isBlockedLeft = false;
+	for(var i = colNum+1; i<treeArray[colNum].length; i++){
+		if(num <= treeArray[rowNum][i]){
+			isBlockedRight = true;
+			break;
+		}
+	}
+	for(var i = colNum-1; i>=0; i--){
+		if(num <= treeArray[rowNum][i]){
+		isBlockedLeft = true;
+			break;
+		}
+	}
+	return isBlockedLeft && isBlockedRight;
+}
+
+function verCheck(rowNum, colNum){
+	var num = parseInt(treeArray[rowNum][colNum]);
+	var isBlockedNorth = false;
+	var isBlockedSouth = false;
+	for(var i = rowNum+1; i<treeArray.length; i++){
+		if(num <= treeArray[i][colNum]){
+			isBlockedSouth = true;
+			break;
+		}
+	}
+	for(var i = rowNum-1; i>=0; i--){
+		if(num <= treeArray[i][colNum]){
+			isBlockedNorth = true;
+			break;
+		}
+	}
+	return isBlockedNorth && isBlockedSouth;
+}
+
+
+function horCalc(rowNum, colNum){
+	var num = parseInt(treeArray[rowNum][colNum])
+	var rightView = 0;
+	var leftView = 0;
+	for(var i = colNum+1; i<treeArray[colNum].length; i++){
+		rightView++;
+		if(num <= treeArray[rowNum][i]){
+			break;
+		}
+	}
+	for(var i = colNum-1; i>=0; i--){
+		leftView++;
+		if(num <= treeArray[rowNum][i]){
+			break;
+		}
+	}
+	return rightView*leftView;
+}
+
+function verCalc(rowNum, colNum){
+	var num = parseInt(treeArray[rowNum][colNum]);
+	var northView = 0;
+	var southView = 0;
+	for(var i = rowNum+1; i<treeArray.length; i++){
+		southView++;
+		if(num <= treeArray[i][colNum]){
+			break;
+		}
+	}
+	for(var i = rowNum-1; i>=0; i--){
+		northView++;
+		if(num <= treeArray[i][colNum]){
+			break;
+		}
+	}
+	return northView*southView;
+}
+
+</script>
+</html>
