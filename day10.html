@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Advent Day 10</h1>
+
+  <input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+
+
+var file = document.getElementById('inputfile');
+
+ var txtArr = [];
+file.addEventListener('change', () => {
+    var fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        var lines = this.result.split('\n');
+        for (var line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+
+function calculate(){
+	var currentTotal = 0;
+
+	var cycle = 0;
+	var x = 1;
+	var display = "";
+	for(var i = 0; i < txtArr.length; i++){
+		
+		if(txtArr[i].includes("noop")){
+			console.log(cycle + ": " + x);
+			display = sDraw(x, cycle, display);
+			cycle += 1;
+		}else if(txtArr[i].includes("addx")){
+			var xAdd = parseInt(txtArr[i].split(" ")[1]);
+			for(var j = 0; j<2; j++){
+				console.log(cycle + ": " + x);
+				display = sDraw(x, cycle, display);
+				cycle += 1;
+				if(j == 1){
+					x += xAdd;
+				}
+			}	
+		}
+	}
+	console.log(display);
+	document.getElementById("calc").innerHTML = display;
+	
+}
+
+function sDraw(x, cycle, currentString){
+	console.log("Draw: " + cycle + ": " + x);
+	cycle = cycle % 40;
+	if(cycle == 0){
+		currentString += "\n"
+	}
+	if(x == cycle || x - 1 == cycle || x + 1 == cycle){
+		currentString += "#";
+	}else{
+		currentString += ".";
+	}
+	return currentString;
+}
+
+//part 1
+
+/*if(txtArr[i].includes("noop")){
+			cycle += 1;
+			if(cycle == 20 || cycle == 60 || cycle == 100 || cycle == 140 || cycle == 180 ||cycle == 220){
+				console.log(cycle + ": " + x);
+				currentTotal += cycle*x;
+				console.log(cycle*x);
+			}
+		}else if(txtArr[i].includes("addx")){
+			var xAdd = parseInt(txtArr[i].split(" ")[1]);
+			for(var j = 0; j<2; j++){
+				cycle += 1;
+				if((cycle == 20 || cycle == 60 || cycle == 100 || cycle == 140 || cycle == 180 ||cycle == 220)){
+					console.log(cycle + ": " + x);
+					currentTotal += cycle*x;
+					console.log(cycle*x);
+				}
+				if(j == 1){
+					x += xAdd;
+				}
+			}	
+		}*/
+
+</script>
+</html>
