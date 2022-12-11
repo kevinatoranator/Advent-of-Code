@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Advent Day 11</h1>
+
+<input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+let file = document.getElementById('inputfile');
+
+let txtArr = [];
+file.addEventListener('change', () => {
+    let fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        let lines = this.result.split('\n');
+        for (let line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+class monkey{
+	items;
+	divisor;
+	moves;
+	constructor(items, divisor, moves){
+		this.items = items;
+		this.divisor = divisor;
+		this.moves = moves;
+	}
+	
+	toss(item){
+		item %= 9699690;
+		if(item % this.divisor == 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	reduce(){
+		//this.items[0] %= 96577; //test
+		//if(this.items[0] > 9699690n){
+			//console.log("reducing");
+		for(let i = 0; i<this.items.length; i++){
+			this.items[i] %= 9699690;
+		}
+		//}
+	}
+}
+
+
+function calculate(){
+	let currentTotal = 0;
+	var rounds = 10000;
+	
+	//test set
+	/*monkey0 = new monkey();
+	monkey0.items = [79, 98];
+	monkey0.divisor = 23;
+	monkey0.moves = 0;
+	monkey1 = new monkey();
+	monkey1.items = [54, 65, 75, 74];
+	monkey1.divisor = 19;
+	monkey1.moves = 0;
+	monkey2 = new monkey();
+	monkey2.items = [79, 60, 97];
+	monkey2.divisor = 13;
+	monkey2.moves = 0;
+	monkey3 = new monkey();
+	monkey3.items = [74];
+	monkey3.divisor = 17;
+	monkey3.moves = 0;*/
+	
+	//real set
+	monkey0 = new monkey();
+	monkey0.items = [83, 62, 93];
+	monkey0.divisor = 2;
+	monkey0.moves = 0;
+	monkey1 = new monkey();
+	monkey1.items = [90, 55];
+	monkey1.divisor = 17;
+	monkey1.moves = 0;
+	monkey2 = new monkey();
+	monkey2.items = [91, 78, 80, 97, 79, 88];
+	monkey2.divisor = 19;
+	monkey2.moves = 0;
+	monkey3 = new monkey();
+	monkey3.items = [64, 80, 83, 89, 59];
+	monkey3.divisor = 3;
+	monkey3.moves = 0;
+	monkey4 = new monkey();
+	monkey4.items = [98, 92, 99, 51];
+	monkey4.divisor = 5;
+	monkey4.moves = 0;
+	monkey5= new monkey();
+	monkey5.items = [68, 57, 95, 85, 98, 75, 98, 75];
+	monkey5.divisor = 13;
+	monkey5.moves = 0;
+	monkey6 = new monkey();
+	monkey6.items = [74];
+	monkey6.divisor = 7;
+	monkey6.moves = 0;
+	monkey7 = new monkey();
+	monkey7.items = [68, 64, 60, 68, 87, 80, 82];
+	monkey7.divisor = 11;
+	monkey7.moves = 0;
+
+	//let monkeyList = [monkey0, monkey1, monkey2, monkey3]; //test
+	let monkeyList = [monkey0, monkey1, monkey2, monkey3, monkey4, monkey5, monkey6, monkey7];
+	for(let k = 0; k < rounds; k++){
+		for(let monkey of monkeyList){
+			monkey.moves += monkey.items.length;
+			//console.log(monkey);
+			monkey.reduce();
+			for(let item of monkey.items){
+				//console.log(item);
+				if(monkey == monkey0){
+					item *= 17;
+					if(monkey.toss(item)){
+						monkey1.items.push(item);
+					}else{
+						monkey6.items.push(item);
+					}
+				}else if(monkey == monkey1){
+					item += 1;
+					if(monkey.toss(item)){
+						monkey6.items.push(item);
+					}else{
+						monkey3.items.push(item);
+					}
+				}else if(monkey == monkey2){
+					item += 3;
+					if(monkey.toss(item)){
+						monkey7.items.push(item);
+					}else{
+						monkey5.items.push(item);
+					}
+				}else if(monkey == monkey3){
+					item += 5;
+					if(monkey.toss(item)){
+						monkey7.items.push(item);
+					}else{
+						monkey2.items.push(item);
+					}
+				}else if(monkey == monkey4){
+					item *= item;
+					if(monkey.toss(item)){
+						monkey0.items.push(item);
+					}else{
+						monkey1.items.push(item);
+					}
+				}else if(monkey == monkey5){
+					item += 2;
+					if(monkey.toss(item)){
+						monkey4.items.push(item);
+					}else{
+						monkey0.items.push(item);
+					}
+				}else if(monkey == monkey6){
+					item += 4;
+					if(monkey.toss(item)){
+						monkey3.items.push(item);
+					}else{
+						monkey2.items.push(item);
+					}
+				}else if(monkey == monkey7){
+					item *= 19;
+					if(monkey.toss(item)){
+						monkey4.items.push(item);
+					}else{
+						monkey5.items.push(item);
+					}
+				}			
+			}
+			monkey.items = []; 
+		}
+	}
+	
+	//test
+	/*for(let k = 0; k < rounds; k++){
+		for(let i = 0; i < 8; i++){
+			let j = monkeyList[i].items.length;
+			//console.log("i:" +i);
+			//console.log("j:" +j);
+			//console.log(monkey2.items.length);
+			monkeyList[i].reduce();
+			while(j > 0){
+				//console.log("i:" +i);
+				//console.log("j:" +j);
+
+				//console.log(monkeyList[i].items);
+				if(i == 0){
+					//monkey0.items[0] *= 19; //test
+					monkey0.items[0] *= 17n;
+					//monkey0.items[0] = Math.floor(monkey0.items[0]/3);
+					if(monkey0.toss()){
+						//monkey2.items.push(monkey0.items[0]); //test
+						monkey1.items.push(monkey0.items[0]);
+						monkey0.items.shift();
+					}else{
+						//monkey3.items.push(monkey0.items[0]); //test
+						monkey6.items.push(monkey0.items[0]);
+						monkey0.items.shift();
+					}
+				}else if(i == 1){
+					//monkey1.items[0] += 6; //test
+					monkey1.items[0] += 1n;
+					//monkey1.items[0] = Math.floor(monkey1.items[0]/3);
+					if(monkey1.toss()){
+						//monkey2.items.push(monkey1.items[0]); //test
+						monkey6.items.push(monkey1.items[0]);
+						monkey1.items.shift();
+					}else{
+						//monkey0.items.push(monkey1.items[0]); //test
+						monkey3.items.push(monkey1.items[0]);
+						monkey1.items.shift();
+					}
+					
+				}else if(i == 2){
+					//monkey2.items[0] *= monkey2.items[0]; //test
+					monkey2.items[0] += 3n;
+					//monkey2.items[0] = Math.floor(monkey2.items[0]/3);
+					//console.log(monkey2.items[0]);
+					if(monkey2.toss()){
+						//monkey1.items.push(monkey2.items[0]); //test
+						monkey7.items.push(monkey2.items[0]);
+						monkey2.items.shift();
+					}else{
+						//monkey3.items.push(monkey2.items[0]); //test
+						monkey5.items.push(monkey2.items[0]);
+						monkey2.items.shift();
+					}
+				}else if(i == 3){
+					//monkey3.items[0] += 3; //test
+					monkey3.items[0] += 5n;
+					//monkey3.items[0] = Math.floor(monkey3.items[0]/3);
+					if(monkey3.toss()){
+						//monkey0.items.push(monkey3.items[0]); //test
+						monkey7.items.push(monkey3.items[0]);
+						monkey3.items.shift();
+					}else{
+						monkey2.items.push(monkey3.items[0]);
+						//monkey1.items.push(monkey3.items[0]); //test
+						monkey3.items.shift();
+					}
+				}else if(i == 4){
+					monkey4.items[0] = monkey4.items[0]**2n;
+					//monkey4.items[0] = Math.floor(monkey4.items[0]/3);
+					if(monkey4.toss()){
+						monkey0.items.push(monkey4.items[0]);
+						monkey4.items.shift();
+					}else{
+						monkey1.items.push(monkey4.items[0]);
+						monkey4.items.shift();
+					}
+				}else if(i == 5){
+					monkey5.items[0] += 2n;
+					//monkey5.items[0] = Math.floor(monkey5.items[0]/3);
+					if(monkey5.toss()){
+						monkey4.items.push(monkey5.items[0]);
+						monkey5.items.shift();
+					}else{
+						monkey0.items.push(monkey5.items[0]);
+						monkey5.items.shift();
+					}
+					
+				}else if(i == 6){
+					monkey6.items[0] += 4n;
+					//monkey6.items[0] = Math.floor(monkey6.items[0]/3);
+					if(monkey6.toss()){
+						monkey3.items.push(monkey6.items[0]);
+						monkey6.items.shift();
+					}else{
+						monkey2.items.push(monkey6.items[0]);
+						monkey6.items.shift();
+					}
+				}else if(i == 7){
+					monkey7.items[0] *= 19n;
+					//monkey7.items[0] = Math.floor(monkey7.items[0]/3);
+					if(monkey7.toss()){
+						monkey4.items.push(monkey7.items[0]);
+						monkey7.items.shift();
+					}else{
+						monkey5.items.push(monkey7.items[0]);
+						monkey7.items.shift();
+					}
+				}			
+				//console.log(monkeyList);
+				j--;
+			}
+			//console.log(monkeyList[i].items);
+		}
+		
+	}*/
+	console.log(monkeyList);
+	let topTwo = [0,0];
+	for(let m of monkeyList){
+		//console.log(m);
+		if(m.moves > topTwo[0]){
+			topTwo.unshift(m.moves);
+			topTwo.pop();
+		}else if(m.moves > topTwo[1]){
+			topTwo.pop();
+			topTwo.push(m.moves);
+		}
+	}	
+	currentTotal = topTwo[0] * topTwo[1];
+	document.getElementById("calc").innerHTML = currentTotal;
+	
+}
+
+</script>
+</html>
