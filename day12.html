@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Advent Day 12</h1>
+
+<input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+let file = document.getElementById('inputfile');
+
+let txtArr = [];
+file.addEventListener('change', () => {
+    let fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        let lines = this.result.split('\n');
+        for (let line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+let heights = ["S","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","E"];
+
+function calculate(){
+	let currentTotal = 0;
+	
+	
+	let mapArray = [];
+	let start = [];
+	let end = [];
+	
+	for(let i = 0; i < txtArr.length; i++){
+		txtArr[i] = txtArr[i].trim();
+		let row = [];
+		for(let j = 0; j < txtArr[i].length; j++){
+			row.push(txtArr[i][j]);
+			if(txtArr[i][j] == "S"){
+				start.push("S");
+				start.push(i);
+				start.push(j);
+			}else if(txtArr[i][j] == "E"){
+				end.push("E");
+				end.push(i);
+				end.push(j);
+			}
+		}
+		mapArray.push(row);
+	}
+	//console.log(mapArray);
+	//console.log(start);
+	console.log(end);
+	
+	let currentPos = start;
+	let lastPos = start;
+	let possiblePaths = dirCheck(currentPos, mapArray, lastPos);
+	console.log(possiblePaths);
+	//while(currentPos[0] != end[0]){
+	for(let x = 0; x < 35; x++){
+		if(possiblePaths.length == 0){
+			break;
+		}else{
+			lastPos = currentPos;
+			currentPos = possiblePaths[0];
+			possiblePaths = dirCheck(currentPos, mapArray, lastPos);
+			possiblePaths.sort((a, b) => heights.indexOf(b[0]) - heights.indexOf(a[0]));
+			console.log(possiblePaths);
+			console.log(currentPos);
+			//console.log(currentPos == end);
+			currentTotal += 1;
+		}
+	}
+	console.log(possiblePaths);
+	document.getElementById("calc").innerHTML = currentTotal;
+}
+
+function dirCheck(position, map, last){
+	let possiblePoints = [];
+	let y = position[1];
+	let x = position[2];
+	//console.log(heights.indexOf(map[y][x]) - heights.indexOf(map[y][x+1]));
+	if(y - 1 >= 0 && y-1 != last[1] && heights.indexOf(map[y][x]) - heights.indexOf(map[y-1][x]) >= -1){   //north
+		possiblePoints.push([map[position[1]-1][position[2]],y-1, x]);
+	}
+	if(x + 1 < map[y].length && x+1 != last[2] && heights.indexOf(map[y][x]) - heights.indexOf(map[y][x+1]) >= -1){   //east
+		possiblePoints.push([map[position[1]][position[2]+1], y, x+1]);
+	}
+	if(y + 1 < map.length && y+1 != last[1] && heights.indexOf(map[y][x]) - heights.indexOf(map[y+1][x]) >= -1){   //south
+		possiblePoints.push([map[position[1]+1][position[2]], y+1, x]);
+	}
+	if(x - 1 >= 0 && x-1 != last[2] && heights.indexOf(map[y][x]) - heights.indexOf(map[y][x-1]) >= -1){   //west
+		possiblePoints.push([map[position[1]][position[2]-1], y, x-1]);
+	}
+	return possiblePoints;
+}
+
+//dijkstra algorithm, generate map of values for distance
+
+
+</script>
+</html>
