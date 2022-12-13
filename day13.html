@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Advent Day 12</h1>
+
+<input type="file" id = "inputfile" name="inputfile">
+
+<pre id="output"></pre> 
+<button onclick = "calculate()">Calculate</button>
+<p id = "calc">None</p>
+
+</body>
+
+<script>
+
+let file = document.getElementById('inputfile');
+
+let txtArr = [];
+file.addEventListener('change', () => {
+    let fr = new FileReader();
+    fr.onload = function() {
+        // By lines
+        let lines = this.result.split('\n');
+        for (let line = 0; line < lines.length; line++) {
+            txtArr = [...txtArr, ...(lines[line].split("\n"))];
+        }
+    }
+    fr.onloadend = function() {
+        console.log(txtArr);
+        document.getElementById('output').textContent=txtArr;
+    }
+
+    fr.readAsText(file.files[0]);
+})
+
+
+function calculate(){
+	let currentTotal = 0;
+	
+	let testList1;
+	let testList2;
+	
+	for(let i = 0; i<txtArr.length; i++){
+		if(i%3 == 0){//line1
+			testList1 = txtArr[i].trim();
+		}else if(i%3 == 1){//line 2
+			testList2 = txtArr[i].trim();
+		}else if(i%3 == 2){//run
+			//console.log(testList1.slice(1,-1));
+			testList1 = subArray(testList1.slice(1,-1));
+			testList2 = subArray(testList2.slice(1,-1));
+			console.log(testList1 + "\n" + testList2 + "\n---------------\n");
+		}
+		
+	}
+
+		
+	document.getElementById("calc").innerHTML = currentTotal;
+}
+
+function createArray(array){
+	let currentArray = [];
+	for(let i = 0; i < array.length; i++){
+		if(array[i] == "["){
+			//run subarray
+			let endIndex = subArray(array);
+			currentArray = array.slice(i+1, endIndex);
+			console.log(currentArray.split(","));
+		}else{
+			//currentArray.push(array[i]);
+			//push to current array
+		}
+	}
+	return currentArray;
+
+}
+
+function subArray(array){
+	let endIndex = array.length;
+	let startIndex = 0;
+	let arrayContents = [];
+	for(let k = 0; k<array.length; k++){
+		if(array[k] == "["){
+			startIndex = k;
+			break;
+		}
+	}
+	let openArray = 0;
+	for(let i = startIndex; i <array.length; i++){
+		if(array[i] == "["){
+			openArray++;
+		}else if(array[i] == "]" && openArray == 0){
+			endIndex = i;
+			break;
+		}else if(array[i] == "]"){
+			openArray--;
+		}
+	}
+	console.log(array.slice(startIndex, endIndex));
+	arrayContents.push(array.slice(startIndex, endIndex));
+	console.log(startIndex + ":" +endIndex);
+	if(startIndex != 0 || endIndex != array.length){
+		subArray(array.slice(startIndex, endIndex));
+	}
+	console.log(arrayContents[0].split(","));
+	return arrayContents;
+}
+
+
+//split remove outside bracket split by comma
+</script>
+</html>
+
